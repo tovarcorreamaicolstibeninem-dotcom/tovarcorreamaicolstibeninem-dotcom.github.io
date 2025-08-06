@@ -1,61 +1,84 @@
 <?php
 session_start();
-include("db.php"); // asegúrate de tener la conexión aquí
 
-// Verificar si se envió el formulario
+// Usuario y contraseña predefinidos
+$usuario_valido = "mmja@gmail.com";
+$contrasena_valida = "mmja";
+
+$mensaje_error = "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $usuario = mysqli_real_escape_string($conexion, $_POST['usuario']);
-    $clave = $_POST['clave']; // No escapes aquí, se usa para verificar hash
+    $correo = strtolower(trim($_POST["correo"]));
+    $contrasena = trim($_POST["contrasena"]);
 
-    $consulta = "SELECT * FROM usuarios WHERE usuario = '$usuario'";
-    $resultado = mysqli_query($conexion, $consulta);
-
-    if (mysqli_num_rows($resultado) == 1) {
-        $fila = mysqli_fetch_assoc($resultado);
-        // Verifica la contraseña hasheada
-        if (password_verify($clave, $fila['clave'])) {
-            $_SESSION['usuario'] = $fila['usuario'];
-            $_SESSION['rol'] = $fila['rol'];
-
-            // Redirigir según el rol
-            if ($fila['rol'] == 'admin') {
-                header("Location: admin/dashboard.php");
-                exit;
-            } else {
-                header("Location: cliente/index.php");
-                exit;
-            }
-        } else {
-            $error = "Usuario o contraseña incorrectos.";
-        }
+    if ($correo === $usuario_valido && $contrasena === $contrasena_valida) {
+        $_SESSION["usuario"] = $correo;
+        header("Location: ./ciclas.html");
+        exit();
     } else {
-        $error = "Usuario o contraseña incorrectos.";
+        $mensaje_error = "Correo o contraseña incorrectos.";
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
     <title>Iniciar Sesión</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-bottom: 1rem;
+        }
+        input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .error {
+            color: red;
+            margin-bottom: 1rem;
+        }
+        button {
+            width: 100%;
+            padding: 0.5rem;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <h3 class="text-center text-primary mb-4">Garaje MTB - Iniciar Sesión</h3>
-        <?php if (isset($error)): ?>
-            <div class="alert alert-danger"><?php echo $error; ?></div>
+<body>
+    <div class="login-container">
+        <h2>Iniciar Sesión</h2>
+        <?php if ($mensaje_error): ?>
+            <div class="error"><?php echo $mensaje_error; ?></div>
         <?php endif; ?>
-        <form method="POST" class="card p-4 shadow-sm mx-auto" style="max-width: 400px;">
-            <div class="mb-3">
-                <label for="usuario" class="form-label">Usuario</label>
-                <input type="text" class="form-control" name="usuario" required>
-            </div>
-            <div class="mb-3">
-                <label for="clave" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" name="clave" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+        <form method="POST">
+            <input type="email" name="correo" required placeholder="Correo electrónico">
+            <input type="password" name="contrasena" required placeholder="Contraseña">
+            <button type="submit">Entrar</button>
         </form>
     </div>
 </body>
