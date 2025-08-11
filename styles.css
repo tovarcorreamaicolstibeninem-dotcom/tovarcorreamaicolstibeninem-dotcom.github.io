@@ -3,8 +3,84 @@ body {
     background: #f4f4f4;
     margin: 0;
     padding: 0;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
 }
 
+/* Figuras matemáticas de fondo */
+body::before,
+body::after,
+.bg-math-1,
+.bg-math-2,
+.bg-math-3,
+.bg-math-4 {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    opacity: 0.12;
+    pointer-events: none;
+}
+
+body::before {
+    content: '+';
+    font-size: 120px;
+    color: #007bff;
+    top: 40px;
+    left: 30px;
+    font-weight: bold;
+}
+
+body::after {
+    content: '-';
+    font-size: 110px;
+    color: #28a745;
+    bottom: 60px;
+    right: 40px;
+    font-weight: bold;
+}
+
+.bg-math-1 {
+    content: '×';
+    font-size: 100px;
+    color: #ffc107;
+    top: 60%;
+    left: 10%;
+    font-weight: bold;
+    position: absolute;
+}
+
+.bg-math-2 {
+    content: '+';
+    font-size: 90px;
+    color: #dc3545;
+    top: 75%;
+    right: 15%;
+    font-weight: bold;
+    position: absolute;
+}
+
+.bg-math-3 {
+    content: '-';
+    font-size: 80px;
+    color: #17a2b8;
+    top: 20%;
+    right: 10%;
+    font-weight: bold;
+    position: absolute;
+}
+
+.bg-math-4 {
+    content: '×';
+    font-size: 70px;
+    color: #6f42c1;
+    bottom: 20%;
+    left: 20%;
+    font-weight: bold;
+    position: absolute;
+}
+
+/* Contenedor principal */
 .container {
     max-width: 400px;
     margin: 40px auto;
@@ -12,6 +88,8 @@ body {
     padding: 24px;
     border-radius: 8px;
     box-shadow: 0 2px 8px #ccc;
+    position: relative;
+    z-index: 1;
 }
 
 h1 {
@@ -68,4 +146,5 @@ button:hover {
     text-align: center;
     font-size: 1.2em;
     margin-top: 10px;
+    color: #d9534f;
 }

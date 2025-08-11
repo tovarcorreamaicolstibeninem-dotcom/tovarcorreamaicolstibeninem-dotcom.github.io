@@ -17,9 +17,47 @@
         .score { text-align: center; margin-top: 10px; }
         .feedback { text-align: center; margin-top: 16px; font-size: 1.1em; font-weight: bold; }
         .timer { text-align: center; font-size: 1.2em; margin-top: 10px; color: #d9534f; }
+        .bg-math-1, .bg-math-2, .bg-math-3, .bg-math-4 {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.15;
+        }
+        .bg-math-1 {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.8);
+            top: 20px;
+            left: -50px;
+            z-index: 0;
+        }
+        .bg-math-2 {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.6);
+            top: 100px;
+            right: -60px;
+            z-index: 0;
+        }
+        .bg-math-3 {
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.4);
+            bottom: 100px;
+            left: -75px;
+            z-index: 0;
+        }
+        .bg-math-4 {
+            width: 180px;
+            height: 180px;
+            background: rgba(255, 255, 255, 0.2);
+            bottom: 20px;
+            right: -90px;
+            z-index: 0;
+        }
     </style>
 </head>
 <body>
+    <!-- Navbar opcional aquí -->
     <div class="container">
         <h1>Juego de Operaciones Rápidas</h1>
         <div class="score" id="score">Puntaje: 0</div>
@@ -37,6 +75,10 @@
         <div style="text-align:center; margin-top:20px;">
             <button onclick="startGame()">Nuevo Juego</button>
         </div>
+        <span class="bg-math-1"></span>
+        <span class="bg-math-2"></span>
+        <span class="bg-math-3"></span>
+        <span class="bg-math-4"></span>
     </div>
     <script>
         let num1 = 0;
@@ -46,6 +88,10 @@
         let resultado = 0;
         let timer = 10;
         let timerInterval = null;
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
 
         function startTimer() {
             clearInterval(timerInterval);
@@ -64,28 +110,35 @@
         }
 
         function newProblem() {
-            const operadores = ['+', '-', '×', '÷'];
+            const operadores = ['+', '-', '×', '÷', '^'];
             operador = operadores[Math.floor(Math.random() * operadores.length)];
 
             if (operador === '+') {
-                num1 = Math.floor(Math.random() * 50) + 1;
-                num2 = Math.floor(Math.random() * 50) + 1;
+                num1 = getRandomInt(-50, 50);
+                num2 = getRandomInt(-50, 50);
                 resultado = num1 + num2;
             } else if (operador === '-') {
-                num1 = Math.floor(Math.random() * 50) + 1;
-                num2 = Math.floor(Math.random() * 50) + 1;
-                if (num2 > num1) [num1, num2] = [num2, num1];
+                num1 = getRandomInt(-50, 50);
+                num2 = getRandomInt(-50, 50);
                 resultado = num1 - num2;
             } else if (operador === '×') {
-                num1 = Math.floor(Math.random() * 12) + 1;
-                num2 = Math.floor(Math.random() * 12) + 1;
+                num1 = getRandomInt(-12, 12);
+                num2 = getRandomInt(-12, 12);
                 resultado = num1 * num2;
             } else if (operador === '÷') {
-                num2 = Math.floor(Math.random() * 12) + 1;
-                resultado = Math.floor(Math.random() * 12) + 1;
+                // Para divisiones exactas y evitar división por cero
+                num2 = getRandomInt(-12, 12);
+                while (num2 === 0) num2 = getRandomInt(-12, 12);
+                resultado = getRandomInt(-12, 12);
                 num1 = num2 * resultado;
+            } else if (operador === '^') {
+                // Potencias: base entre -5 y 5, exponente entre 0 y 3
+                num1 = getRandomInt(-5, 5);
+                num2 = getRandomInt(0, 3);
+                resultado = Math.pow(num1, num2);
             }
-            document.getElementById('problem').textContent = `${num1} ${operador} ${num2} = ?`;
+            let opDisplay = operador === '^' ? `${num1} ^ ${num2}` : `${num1} ${operador} ${num2}`;
+            document.getElementById('problem').textContent = `${opDisplay} = ?`;
             document.getElementById('answer').value = '';
             document.getElementById('feedback').textContent = '';
             startTimer();
@@ -95,14 +148,14 @@
             e.preventDefault();
             clearInterval(timerInterval);
             const userAnswer = parseInt(document.getElementById('answer').value, 10);
-            if (userAnswer === resultado) {
+             if (userAnswer === resultado) {
                 score++;
                 document.getElementById('feedback').textContent = '¡Correcto!';
                 document.getElementById('feedback').style.color = 'green';
                 document.getElementById('score').textContent = `Puntaje: ${score}`;
                 setTimeout(newProblem, 1000);
             } else {
-                document.getElementById('feedback').textContent = 'Incorrecto, intenta de nuevo.';
+                document.getElementById('feedback').textContent = `Incorrecto, intenta de nuevo.`;
                 document.getElementById('feedback').style.color = 'red';
                 setTimeout(newProblem, 1000);
             }
@@ -117,5 +170,5 @@
         // Iniciar el juego al cargar
         startGame();
     </script>
-    </body>
+</body>
 </html>
